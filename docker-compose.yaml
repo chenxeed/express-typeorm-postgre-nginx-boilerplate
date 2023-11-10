@@ -16,7 +16,7 @@ services:
     build:
       context: ./server
     volumes:
-      - ./server/src:/server/src
+      - ./server/src:/app/src
     environment:
       - DATABASE_URL=postgres://postgres:password@db:5432/mydb
     ports:

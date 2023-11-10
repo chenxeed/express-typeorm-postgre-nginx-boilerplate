@@ -8,20 +8,6 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 
 AppDataSource.initialize().then(async () => {
-
-    console.log("Inserting a new user into the database...")
-    const user = new User()
-    user.firstName = "Hola"
-    user.lastName = "Yeah"
-    user.age = 50
-    await AppDataSource.manager.save(user)
-    console.log("Saved a new user with id again!: " + user.id)
-
-    console.log("Loading users from the database...")
-    const users = await AppDataSource.manager.find(User)
-    console.log("Loaded users: ", users)
-
-    console.log("Here you can setup and run express / fastify / any other framework.")
     dotenv.config();
     const port = process.env.PORT || 3000;
     const router = express.Router();
@@ -34,7 +20,6 @@ AppDataSource.initialize().then(async () => {
     router.get('/', async (req: Request, res: Response) => {
       const userRepo = AppDataSource.manager.getRepository(User);
       const result = await userRepo.find();
-      console.log('HAI!');
       res.json(result);
     });
     

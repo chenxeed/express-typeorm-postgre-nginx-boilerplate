@@ -3,7 +3,7 @@
    "version": "0.0.0",
    "private": true,
    "scripts": {
-      "start": "nodemon src/index.ts",
+      "start": "nodemon src/index.ts -L",
       "build": "tsc",
       "serve": "node dist/app.js",
       "typeorm": "typeorm-ts-node-commonjs"
