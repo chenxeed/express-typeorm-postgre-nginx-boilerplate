@@ -1,40 +1,30 @@
 import { AppDataSource } from "./data-source"
-import { User } from "./modules/User/entity/User"
+import { User } from "./modules/User/entity"
 import bodyParser from 'body-parser';
 import express, { Request, Response } from 'express';
-import { graphqlHTTP } from "express-graphql";
-import { buildSchema } from "type-graphql";
 import path from 'path';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import { UserResolver } from "./modules/User/resolvers/UserResolver";
+import { generateResolvers, generateSchema } from "./schema";
+import { ApolloServer } from 'apollo-server-express';
 
 AppDataSource.initialize().then(async () => {
   dotenv.config();
   const port = process.env.PORT || 3000;
   const router = express.Router();
 
+  const server = new ApolloServer({
+    typeDefs: generateSchema(),
+    resolvers: generateResolvers(),
+  });
+
   const app = express();
   app.use(helmet({ contentSecurityPolicy: (process.env.NODE_ENV === 'production') ? undefined : false }));
   app.use(morgan('combined'));
   app.use(bodyParser.json());
-
-  // Build GraphQL schema
-  
-  const root = {
-    hello () {
-      return "Hello World"
-    }
-  };
-
-  app.use("/graphql", graphqlHTTP({
-    schema: await buildSchema({
-      resolvers: [UserResolver]
-    }),
-    rootValue: root,
-    graphiql: true 
-  }));
+  await server.start();
+  server.applyMiddleware({ app });
 
   router.get('/', async (req: Request, res: Response) => {
     const userRepo = AppDataSource.manager.getRepository(User);
