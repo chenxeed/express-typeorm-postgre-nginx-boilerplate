@@ -17,6 +17,7 @@ AppDataSource.initialize().then(async () => {
   const server = new ApolloServer({
     typeDefs: generateSchema(),
     resolvers: generateResolvers(),
+
   });
 
   const app = express();
@@ -24,7 +25,14 @@ AppDataSource.initialize().then(async () => {
   app.use(morgan('combined'));
   app.use(bodyParser.json());
   await server.start();
-  server.applyMiddleware({ app });
+  server.applyMiddleware({
+    app,
+    path: '/api/graphql',
+    cors: {
+      origin: "http://localhost",
+      credentials: true
+    }
+  });
 
   router.get('/', async (req: Request, res: Response) => {
     const userRepo = AppDataSource.manager.getRepository(User);
