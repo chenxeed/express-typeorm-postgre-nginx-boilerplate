@@ -1,9 +1,18 @@
-var express = require('express');
-var router = express.Router();
+import express, { Router, Express } from "express";
+import dotenv from 'dotenv';
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.json({ message: 'Hello World!' });
-});
+export const getRouter = (app: Express): Router => {
+  const env = dotenv.config();
+  const apiPrefix = env.parsed.API_PREFIX || '/';
+  const router = express.Router();
 
-module.exports = router;
+  router.get('/', (_req, res) => {
+    res.json({
+      data: 'Success!',
+    });
+  });
+
+  app.use(apiPrefix, router);
+
+  return router;  
+};

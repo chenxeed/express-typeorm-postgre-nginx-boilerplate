@@ -5,10 +5,9 @@ COPY ./package* /client/
 WORKDIR /client
 
 RUN npm ci --unsafe-perm=true
-RUN npm install -g next
 
 WORKDIR /
 COPY . /client
 WORKDIR /client
 
-CMD next dev
+CMD npm run dev

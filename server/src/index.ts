@@ -1,5 +1,4 @@
 import { AppDataSource } from "./data-source"
-import { User } from "./modules/User/entity"
 import bodyParser from 'body-parser';
 import express, { Request, Response } from 'express';
 import path from 'path';
@@ -8,20 +7,20 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import { generateResolvers, generateSchema } from "./schema";
 import { ApolloServer } from 'apollo-server-express';
+import { getRouter } from "./routes";
 
 AppDataSource.initialize().then(async () => {
-  dotenv.config();
-  const port = process.env.PORT || 3000;
+  const env = dotenv.config();
+  const port = env.parsed.API_PORT || 3000;
   const router = express.Router();
 
   const server = new ApolloServer({
     typeDefs: generateSchema(),
     resolvers: generateResolvers(),
-
   });
 
   const app = express();
-  app.use(helmet({ contentSecurityPolicy: (process.env.NODE_ENV === 'production') ? undefined : false }));
+  app.use(helmet({ contentSecurityPolicy: (env.parsed.NODE_ENV === 'production') ? undefined : false }));
   app.use(morgan('combined'));
   app.use(bodyParser.json());
   await server.start();
@@ -34,15 +33,7 @@ AppDataSource.initialize().then(async () => {
     }
   });
 
-  router.get('/', async (req: Request, res: Response) => {
-    const userRepo = AppDataSource.manager.getRepository(User);
-    const result = await userRepo.find();
-    res.json(result);
-  });
-  
-  router.use('/static', express.static(path.join(__dirname, 'public')));
-  
-  app.use('/api', router);
+  getRouter(app);
   
   app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);

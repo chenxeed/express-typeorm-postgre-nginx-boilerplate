@@ -2,20 +2,20 @@ import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm"
 
 
 @Entity()
-export class User extends BaseEntity {
+export class Todo extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     id: number
 
     @Column()
-    firstName: string
-
-    @Column()
-    lastName: string
+    title: string
 
     @Column({
         nullable: true,
     })
-    address: string
+    description: string
+
+    @Column()
+    isCompleted: boolean
 
 }

@@ -1,21 +1,21 @@
 import { gql } from "@apollo/client";
 
-export const GET_USERS = gql`
-query Query {
-  users {
-    firstName
+export const GET_TODOS = gql`
+query Todos {
+  todos {
     id
+    title
+    isCompleted
   }
-}
-`
+}`
 
-export const CREATE_USER = gql`
-mutation Mutation($firstName: String!, $lastName: String!) {
-  createUser(firstName: $firstName, lastName: $lastName) {
-    firstName
+export const CREATE_TODO = gql`
+mutation CreateTodo($title: String!, $description: String) {
+  createTodo(title: $title, description: $description) {
     id
-    lastName
-    address
+    description
+    isCompleted
+    title
   }
 }
 `;

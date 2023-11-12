@@ -1,20 +1,20 @@
 import Base from './base';
 import { GraphQLSchema, buildSchema } from "graphql";
-import { UserSchema, UserQueryResolver, UserMutationResolver } from "../modules/User/resolver";
+import { TodoSchema, TodoQueryResolver, TodoMutationResolver } from "../modules/Todo/resolver";
 import { IResolvers } from '@graphql-tools/utils';
 
 export function generateSchema (): GraphQLSchema {
-  const schemaQuery = [Base, UserSchema].join('\n');
+  const schemaQuery = [Base, TodoSchema].join('\n');
   return buildSchema(schemaQuery);
 }
 
 export function generateResolvers (): IResolvers<any, any> {
   return {
     Query: {
-      ...UserQueryResolver
+      ...TodoQueryResolver
     },
     Mutation: {
-      ...UserMutationResolver
+      ...TodoMutationResolver
     }
   }
 }
