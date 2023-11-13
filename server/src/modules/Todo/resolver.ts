@@ -1,3 +1,4 @@
+import { User } from "../User/entity";
 import { Todo } from "./entity";
 
 export const TodoSchema = `
@@ -7,7 +8,7 @@ extend type Query {
 }
 
 extend type Mutation {
-  createTodo(title: String!, description: String): Todo!
+  createTodo(userId: Int!, title: String!, description: String): Todo!
 }
 
 type Todo {
@@ -15,6 +16,7 @@ type Todo {
   title: String!
   description: String
   isCompleted: Boolean
+  user: User
 }
 `;
 
@@ -35,12 +37,27 @@ export const TodoQueryResolver = {
   },
 };
 
+export const TodoUserResolver = {
+  async todos(parent) {
+    const result = await Todo.find({
+      where: {
+        user: {
+          id: parent.id,
+        },
+      }
+    })
+    return result;
+  }
+}
+
 export const TodoMutationResolver = {
-  async createTodo(_, { title, description }) {
+  async createTodo(_, { userId, title, description }) {
+    const user = await User.findOneBy({ id: userId });
     const todo = Todo.create({
       title,
       description,
-      isCompleted: false
+      isCompleted: false,
+      user: user,
     });
     await todo.save();
     return todo;
