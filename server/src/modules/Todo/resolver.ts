@@ -20,7 +20,11 @@ type Todo {
 
 export const TodoQueryResolver = {
   async todos() {
-    const result = await Todo.find();
+    const result = await Todo.find({
+      order: {
+        id: "DESC"
+      }
+    });
     return result;
   },
   async todo(_, { id }) {
